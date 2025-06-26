@@ -8,4 +8,6 @@ const conexao = mysql.createConnection({
     port: 3306
 })
 
+conexao.connect()
+
 export default conexao
