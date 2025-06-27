@@ -1,77 +1,31 @@
-import conexao from '../database/conexao.js';
+import SelecaoRepository from '../repositories/SelecaoRepository.js';
 
 class SelecaoController {
     async index(req, res) {
-        try {
-        const selecao = await req.context.models.Selecao.findAll({
-            include: [
-            {
-                model: req.context.models.Jogador,
-                as: 'jogadores',
-                attributes: ['id', 'nome', 'posicao']
-            }
-            ]
-        });
-        return res.status(200).json(selecao);
-        } catch (error) {
-        return res.status(500).json({ error: 'Erro ao buscar seleções' });
-        }
+        const row = await SelecaoRepository.findAll();
+        res.json(row);
     }
     
     async show(req, res) {
-        try {
-        const selecao = await req.context.models.Selecao.findByPk(req.params.id, {
-            include: [
-            {
-                model: req.context.models.Jogador,
-                as: 'jogadores',
-                attributes: ['id', 'nome', 'posicao']
-            }
-            ]
-        });
-        if (!selecao) {
-            return res.status(404).json({ error: 'Seleção não encontrada' });
-        }
-        return res.status(200).json(selecao);
-        } catch (error) {
-        return res.status(500).json({ error: 'Erro ao buscar seleção' });
-        }
+        const row = await SelecaoRepository.findById(req.params.id);
+        res.json(row)
     }
 
     async store(req, res) {
-        try {
-        const selecao = await req.context.models.Selecao.create(req.body);
-        return res.status(201).json(selecao);
-        } catch (error) {
-        return res.status(500).json({ error: 'Erro ao criar seleção' });
-        }
+        const row = await SelecaoRepository.create(req.body);
+        res.status(201).json(row);
     }
 
     async update(req, res) {
-        try {
-        const selecao = await req.context.models.Selecao.findByPk(req.params.id);
-        if (!selecao) {
-            return res.status(404).json({ error: 'Seleção não encontrada' });
-        }
-        await selecao.update(req.body);
-        return res.status(200).json(selecao);
-        } catch (error) {
-        return res.status(500).json({ error: 'Erro ao atualizar seleção' });
-        }
+        const row = await SelecaoRepository.update(req.params.id, req.body);
+        res.json(row);
     }
 
     async delete(req, res) {
-        try {
-        const selecao = await req.context.models.Selecao.findByPk(req.params.id);
-        if (!selecao) {
-            return res.status(404).json({ error: 'Seleção não encontrada' });
-        }
-        await selecao.destroy();
-        return res.status(204).send();
-        } catch (error) {
-        return res.status(500).json({ error: 'Erro ao excluir seleção' });
-        }
+        const row = await SelecaoRepository.delete(req.params.id);
+        res.status(204).json(row);
     }
 }
+      
 
 export default new SelecaoController()
